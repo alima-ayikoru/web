@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analog Clock</title>
+    <style>
+        :root{
+            --oxfordBlue: #002147;
+            --pastelPink: #FFD1DC;
+            --lemonYellow: #FFF44F;
+            --silver: #C0C0C0;
+        }
+       body{
+        height: 100vh;
+        background: var(--pastelPink);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+       }
+       .clock{
+        height: 300px;
+        width:300px;
+        border-radius: 50%;
+        position: relative;
+        background: var(--oxfordBlue);
+       }
+       .clock-minute {
+        position: absolute;
+        width: 3px;
+        height: calc(50% - 6px);
+        transform-origin: bottom center;
+        left:calc(50% - 1px);
+        border-top: 6px solid var(--silver);
+        border-radius: 1px;
+       }
+       .clock-minute:nth-of-type(5n + 1){
+        height: calc(50% - 12px);
+        border-top: 12px solid var(--silver);
+       }
+       .clock-center {
+        position: absolute;
+        height: 6px;
+        width: 6px;
+        border-radius:50%;
+        z-index: 3;
+        background: var(--lemonYellow);
+        top: calc(50% - 3px);
+        left:calc(50% - 2px);
+       }
+      .second-hand, .minute-hand, .hour-hand {
+        position:absolute;
+        left:calc(50% - 1px);
+        width: 3px;
+        transform-origin:bottom center;
+        border-top-right-radius: 50%;
+        border-top-left-radius: 50%;
+      }
+      .second-hand { height: calc(50% - 14px);
+        margin-top: 14px;
+        background: var(--lemonYellow);
+        animation: time 60s steps(60) infinite;
+        z-index: 4;
+      }
+
+      .minute-hand { height: calc(50% - 23px);
+        margin-top: 23px;
+        background: var(--silver);
+        animation: time 3600s linear infinite;}
+
+      .hour-hand { height: calc(50% - 60px);
+        margin-top: 60px;
+        background: var(--silver);
+        animation: time 43200s linear infinite;}
+
+
+      @keyframes time {
+        to {transform: rotate(360deg);}
+      }
+
+    </style>
+</head>
+<body>
+    <div class="clock">
+      <span class="clock-center"></span>
+      <span class="second-hand"></span>
+      <span class="minute-hand"></span>
+      <span class="hour-hand"></span>
+    </div>
+
+    <script async >
+      for (let i = 0; i < 60; i++){
+        const section = document.createElement('section');
+        section.classList.add('clock-minute');
+        const clockDiv = document.querySelector('.clock');
+        clockDiv.appendChild(section);}
+
+      const sections = document.querySelectorAll('section');
+      sections.forEach((section,index)=>{
+        section.style.transform  = `rotate(${6 * index}deg)`;});
+
+     function getSecondsFromStartOfToday() {
+      const now = new Date();
+      const startOfDay = new Date(now.getFullYear(),now.getMonth(),now.getDate());
+      const secondsElapsed = (now - startOfDay) / 1000;
+      return Math.round(secondsElapsed); }
+
+    let currentSec = getSecondsFromStartOfToday();
+    let seconds = (currentSec / 60) % 1;
+    let minutes = (currentSec / 3600) % 1;
+    let hours = (currentSec / 43200) % 1;
+
+    const secondhand = document.querySelector(".second-hand");
+    const minutehand = document.querySelector(".minute-hand");
+    const hourhand = document.querySelector(".hour-hand");
+
+    secondhand.style.animationDelay = `${seconds * -60}s`;
+    minutehand.style.animationDelay = `${minutes * -3600}s`;
+    hourhand.style.animationDelay = `${hours * -43200}s`;
+    </script>
+</body>
+</html>
